@@ -26,10 +26,10 @@ public class SSUserDetailsService implements UserDetailsService {
         this.userRepository=userRepository;
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(5);
-//    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(5);
+    }
 
     @Override
     public UserDetails loadUserByUsername (String username)
@@ -50,11 +50,10 @@ public class SSUserDetailsService implements UserDetailsService {
 
 
     private Set<GrantedAuthority> getAuthorities(User user) {
-        Set<GrantedAuthority> authorities
+        HashSet<GrantedAuthority> authorities
                 = new HashSet<>();
         for(RoleClass roleClass : user.getRoles()) {
-            GrantedAuthority grantedAuthority
-                    = new SimpleGrantedAuthority(roleClass.getRole());
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(roleClass.getRole());
             authorities.add(grantedAuthority);
         }
         return authorities;
