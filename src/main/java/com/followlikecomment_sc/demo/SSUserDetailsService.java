@@ -26,10 +26,10 @@ public class SSUserDetailsService implements UserDetailsService {
         this.userRepository=userRepository;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder(5);
+//    }
 
     @Override
     public UserDetails loadUserByUsername (String username)

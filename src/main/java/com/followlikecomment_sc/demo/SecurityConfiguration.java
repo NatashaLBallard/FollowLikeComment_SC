@@ -20,13 +20,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder(5);
     }
 
 
-    @Autowired
-    private SSUserDetailsService userDetailsService;
+//    @Autowired
+//    private SSUserDetailsService userDetailsService;
 
     @Autowired
     private UserRepository userRepository;
@@ -77,6 +77,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
-        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(encoder());
     }
 }
