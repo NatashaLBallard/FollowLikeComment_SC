@@ -1,8 +1,11 @@
 package com.followlikecomment_sc.demo;
 
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,8 +31,11 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
+
+//    @Column(name = "roleType")
+//    private String roleType;
 
 //
 //    @ManyToMany(fetch = FetchType.EAGER)
@@ -37,21 +43,52 @@ public class User {
 //            inverseJoinColumns = @JoinColumn(name = "role_id"))
 //    private Collection<RoleClass> roles;
 
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.EAGER)
     Set<RoleClass> roles;
+
+
+    @Transient
+    private PasswordEncoder encoder;
+
+
+    @Transient
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     public User() {
         this.roles = new HashSet<>();
+        encoder = passwordEncoder();
     }
 
-    public User(String email, String password, String firstName, String lastName, boolean enabled, String username, String roleType) {
+
+
+//    public User(String email, String password, String firstName, String lastName, boolean enabled, String username, String roleType) {
+//        this.email = email;
+//        this.password = password;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.enabled = enabled;
+//        this.username = username;
+//
+//    }
+
+    public  User(String email, String firstName, String lastName, boolean enabled, String username,  String password, RoleClass role) {
         this.email = email;
-        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.enabled = enabled;
         this.username = username;
+        this.password = password;
+
+        this.roles = new HashSet<>();
+        addRole(role);
+        encoder = passwordEncoder();
+        setPassword(password);
+
     }
+
 
 //    public User() {
 //    }
@@ -72,12 +109,21 @@ public class User {
         this.email = email;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = encoder.encode(password);
+        System.out.println("Password:"+this.password);
     }
 
     public String getFirstName() {
@@ -104,13 +150,6 @@ public class User {
         this.enabled = enabled;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
 //    public Collection<RoleClass> getRoles() {
 //        return roles;
@@ -123,13 +162,6 @@ public class User {
 
 
 
-//    @Override
-//    public String toString() {
-//        return "User{" +
-//                "roleType='" + roleType + '\'' +
-//                '}';
-//    }
-
     public Set<RoleClass> getRoles() {
         return roles;
     }
@@ -138,9 +170,41 @@ public class User {
         this.roles = roles;
     }
 
-    public void addRole(RoleClass role)
+    public void addRole(RoleClass r)
     {
-        this.roles.add(role);
+        this.roles.add(r);
     }
+
+//    public String getRoleType() {
+//        return roleType;
+//    }
+//
+//    public void setRoleType(String roleType) {
+//        this.roleType = roleType;
+//    }
+
+    public PasswordEncoder getEncoder() {
+        return encoder;
+    }
+
+    public void setEncoder(PasswordEncoder encoder) {
+        this.encoder = encoder;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                "firstName='" + firstName + '\'' +
+                "lastName='" + lastName + '\'' +
+                "enabled='" + enabled + '\'' +
+                "username='" + username + '\'' +
+                "password='" + password + '\'' +
+                "roles='" + roles + '\'' +
+                "encoder='" + encoder + '\'' +
+                '}';
+    }
+
 
 }

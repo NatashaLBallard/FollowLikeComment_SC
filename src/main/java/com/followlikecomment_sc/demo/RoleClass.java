@@ -4,7 +4,6 @@ package com.followlikecomment_sc.demo;
 
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,8 +14,8 @@ public class RoleClass {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(unique=true)
-    private String role;
+//    @Column(unique=true)
+    private String roleName;
 
 //    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
 //    private Collection<User> users;
@@ -25,10 +24,13 @@ public class RoleClass {
     Set<User> users;
 
     public RoleClass() {
-        users = new HashSet<>();
+        this.users = new HashSet<>();
     }
 
-
+    public RoleClass(String roleName) {
+        this.roleName = roleName;
+        this.users = new HashSet<>();
+    }
 
 //    public RoleClass(String role) {
 //        this.role = role;
@@ -46,12 +48,12 @@ public class RoleClass {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
 //    public Collection<User> getUsers() {
@@ -62,12 +64,12 @@ public class RoleClass {
 //        this.users = users;
 //    }
 
-    @Override
-    public String toString() {
-        return "RoleClass{" +
-                "role='" + role + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "RoleClass{" +
+//                "role='" + role + '\'' +
+//                '}';
+//    }
 
     public Set<User> getUsers() {
         return users;

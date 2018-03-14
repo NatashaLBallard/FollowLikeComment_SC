@@ -48,6 +48,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        return authProvider;
 //    }
 
+
+
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        PasswordEncoder pE = passwordEncoder();
+        auth.inMemoryAuthentication()
+                .withUser("username").password(pE.encode("password")).authorities("USER")
+                .and()
+                .withUser("admin").password(pE.encode("password")).authorities("ADMIN");
+        auth.userDetailsService(userDetailsServiceBean());
+    }
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -77,9 +92,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(passwordEncoder());
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth)
+//            throws Exception {
+//        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(passwordEncoder());
+//    }
 }

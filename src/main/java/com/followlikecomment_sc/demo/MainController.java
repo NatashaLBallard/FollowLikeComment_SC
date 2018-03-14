@@ -30,15 +30,44 @@ public class MainController {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
 
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
 
+
+
+    @RequestMapping("/")
+    public String index(){
+        return "index";
+    }
+
+    @RequestMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+    @RequestMapping("/secure")
+    public String secure(){
+        return "secure";
+    }
+
+
+    @RequestMapping("/user")
+    public String userIndex(Model model, Authentication auth){
+
+        User newUser = new User();
+        return "user";
+    }
+
+
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String showRegistrationPage(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("newUser", new User());
         return "registration";
     }
 
@@ -65,7 +94,7 @@ public class MainController {
 
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String processRegistrationPage( @Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+    public String processRegistrationPage( @Valid @ModelAttribute("newUser") User newUser, BindingResult result, Model model) {
 //
 //        model.addAttribute("roleType", userRepository.findOne(user.getId()));
 //        User roleType = userRepository.findOne(id)
@@ -76,22 +105,27 @@ public class MainController {
 // add if statement to set value of options "if roleType (from dropdown) equals APPLICANT, set to applicant, else.."
 //        model.addAttribute("user", user);
 
-        String thePassword = user.getPassword();
+        String thePassword = newUser.getPassword();
 
         if (result.hasErrors()) {
             return "registration";
         } else {
-            user.addRole(roleRepository.findByRole("USER"));
+//            user.addRole(roleRepository.findRoleClassByRoleName("USER"));
 //            user.setRoles(roleRepository.findByRole("USER"));
-            user.setPassword(passwordEncoder.encode(thePassword));
-            userService.saveUser(user);
-            model.addAttribute("user", new User());
+
+
+            newUser.setPassword(passwordEncoder.encode(thePassword));
+            userService.saveUser(newUser);
+            newUser.addRole(roleRepository.findRoleClassByRoleName("USER"));
+
+
+//            model.addAttribute("user", new User());
 //            model.addAttribute("message",
 //                    "User Account Successfully Created");
             System.out.println("New user created.");
 //            System.out.println(user.getRoleType());
         }
-        return "index";
+        return "userIndex";
 //
 //
 //        user.setRoleType(roleType;
@@ -106,29 +140,14 @@ public class MainController {
 
 
 
-    @RequestMapping("/")
-    public String index(){
-        return "index";
-    }
-
-    @RequestMapping("/login")
-    public String login(){
-        return "login";
-    }
-
-    @RequestMapping("/secure")
-    public String secure(){
-        return "secure";
-    }
-
-    @RequestMapping("/user")
-    public String user(){
-        return "user";
-    }
-
-    @RequestMapping("/admin")
-    public String admin(){
-        return "admin";
-    }
+//    @RequestMapping("/user")
+//    public String user(){
+//        return "user";
+//    }
+//
+//    @RequestMapping("/admin")
+//    public String admin(){
+//        return "admin";
+//    }
 
 }
